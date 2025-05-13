@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Books App</title>
+</head>
+<body>
+<h1>Books Form</h1>
+<form id="bookForm">
+    <input name="isbn" placeholder="ISBN" required />
+    <input name="title" placeholder="Title" required />
+    <input name="author" placeholder="Author" required />
+    <button type="submit">Add Book</button>
+</form>
+
+<h2>Books List</h2>
+<table border="1" id="bookTable">
+    <thead>
+    <tr>
+        <th>ISBN</th><th>Title</th><th>Author</th><th>Actions</th>
+    </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<script>
+    const form = document.getElementById("bookForm");
+    const tableBody = document.querySelector("#bookTable tbody");
+    let editingRow = null;
+
+    form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const isbn = form.isbn.value;
+        const title = form.title.value;
+        const author = form.author.value;
+
+        if (editingRow) {
+            editingRow.children[0].textContent = isbn;
+            editingRow.children[1].textContent = title;
+            editingRow.children[2].textContent = author;
+            editingRow = null;
+        } else {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+          <td>${isbn}</td>
+          <td>${title}</td>
+          <td>${author}</td>
+          <td>
+            <button class="edit-button">Edit</button>
+            <button class="delete-button">Delete</button>
+          </td>
+        `;
+            tableBody.appendChild(row);
+        }
+
+        form.reset();
+    });
+
+    tableBody.addEventListener("click", function (e) {
+        const row = e.target.closest("tr");
+
+        if (e.target.classList.contains("edit-button")) {
+            form.isbn.value = row.children[0].textContent;
+            form.title.value = row.children[1].textContent;
+            form.author.value = row.children[2].textContent;
+            editingRow = row;
+        }
+
+        if (e.target.classList.contains("delete-button")) {
+            row.remove();
+        }
+    });
+</script>
+</body>
+</html>
